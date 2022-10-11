@@ -3,33 +3,39 @@ import express from "express";
 const app = express();
 import cors from "cors";
 import dotenv from "dotenv";
-import mongoose, { ConnectOptions } from "mongoose";
 import { ErrorHandler } from "./src/middlewares/errorHandler";
-import Users from "./src/routes/Users";
+import {DataSource} from "typeorm"
+import { Company } from "./src/entities/company.entity";
 
 app.use(bodyParser.json());
 app.use(cors());
 
 dotenv.config();
 
-const db: string = process.env.MONGO_URI;
-console.log(db);
+export const AppDataSource = new DataSource({
+    type:"postgres",
+    host:"localhost",
+    port:5432,
+    username:"root",
+    password:"admin",
+    database:"test",
+    entities:[Company],
+    synchronize:true,
+    logging:false
+})
 
-mongoose
-    .connect(db, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    } as ConnectOptions)
-    .then(() => {
-        console.log("databse ");
-    })
-    .catch((err) => {
-        console.log("Error connecting to the database", err);
-    });
+const connectDB = async () => {
+    try{
+        const connection = await AppDataSource.initialize();
+        console.log(connection);
+    }catch(e){
+        console.log(e,"error");
+    }
+}
+
+connectDB();
 
 const PORTNUMBER: number = parseInt(process.env.PORT) || 5000;
-
-app.use("/user", Users);
 
 app.use(ErrorHandler);
 
