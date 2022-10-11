@@ -6,19 +6,22 @@ import dotenv from "dotenv";
 import { ErrorHandler } from "./src/middlewares/errorHandler";
 import {DataSource} from "typeorm"
 import { Company } from "./src/entities/company.entity";
+import CompanyRoute from "./src/routes/company.route";
 
 app.use(bodyParser.json());
 app.use(cors());
 
 dotenv.config();
 
+app.use("/company",CompanyRoute);
+
 export const AppDataSource = new DataSource({
     type:"postgres",
     host:"localhost",
     port:5432,
-    username:"root",
-    password:"admin",
-    database:"test",
+    username:"myusername",
+    password:"mypassword",
+    database:"postgres",
     entities:[Company],
     synchronize:true,
     logging:false
@@ -27,7 +30,7 @@ export const AppDataSource = new DataSource({
 const connectDB = async () => {
     try{
         const connection = await AppDataSource.initialize();
-        console.log(connection);
+        // console.log(connection);
     }catch(e){
         console.log(e,"error");
     }
