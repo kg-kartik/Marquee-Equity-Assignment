@@ -2,6 +2,8 @@ import React from "react";
 import Dropdown from "../components/Dropdown";
 import {useEffect,useState} from "react"
 import Axios from "axios"
+// import cheerio from "cheerio";
+import { parse } from 'node-html-parser';
 
 const SearchBar = () => {
 
@@ -13,8 +15,6 @@ const SearchBar = () => {
         setDropdownValue(inputValue.value);
     }
 
-    console.log(input,"input");
-
     const handleInputValueChange = (val) => {
         setInput(val);
     }
@@ -25,6 +25,8 @@ const SearchBar = () => {
 
     formData.append("search",input);
     formData.append("filter","company");
+
+    console.log(options,"options")
 
     //!todo need to use async slect
 
@@ -42,10 +44,14 @@ const SearchBar = () => {
                     url:API_URL
                 })
                 .then((data) => {
-                    console.log(data.data);
-                    setOptions([{ value: 'chocolate', label: 'Chocolate' },
-                    { value: 'strawberry', label: 'Strawberry' },
-                    { value: 'vanilla', label: 'Vanilla' }])
+                    console.log(data.data,"data");
+                    
+                    const root = parse(data.data);
+
+                    root.querySelectorAll('div').forEach(function(elem) {
+                        console.log(elem.innerText);  
+                    });
+
                 }).catch((err) => {
                     console.log(err);
                 })
@@ -58,16 +64,18 @@ const SearchBar = () => {
     },[input])
 
     return (
-        <div className="search-wrapper">
-
-            <Dropdown
-                placeholder={"Search company"}
-                options={options}
-                value={dropdownValue}
-                cb={handleDropdownValue}
-                cbInput={handleInputValueChange}
-            />
-        </div>
+        <>
+            <p className='list-title'>Search and add Company</p>
+            <div className="search-wrapper">
+                <Dropdown
+                    placeholder={"Search company"}
+                    options={options}
+                    value={dropdownValue}
+                    cb={handleDropdownValue}
+                    cbInput={handleInputValueChange}
+                />
+            </div>
+        </>
     )
 }
 

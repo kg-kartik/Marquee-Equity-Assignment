@@ -1,10 +1,10 @@
-import React from 'react'
+import Axios from 'axios';
+import React, { useEffect, useState } from 'react'
 import { useTable } from 'react-table'
 
-import makeData from './makeData';
-
 function Table({ columns, data }) {
-  const {
+  
+    const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
@@ -46,17 +46,32 @@ function Details() {
   const columns = React.useMemo(
     () => [ 
         {
-            Header: 'First Name',
-            accessor: 'firstName',
+            Header: 'Cin',
+            accessor: 'cin',
         },
         {
-            Header: 'Last Name',
-            accessor: 'lastName',
+            Header: 'Name',
+            accessor: 'name',
         },
     ],
   )
 
-  const data = React.useMemo(() => makeData(20), [])
+  const [data,setData] = useState([]);
+
+  useEffect(() => {
+    const getData = async () => {
+        try {
+            const result = await Axios.get("http://localhost:5000/company/getCompanies");
+
+            console.log(result.data.data);
+
+            setData(result.data.data);
+        }catch(err){
+            console.log(err);
+        }
+    }
+    getData();
+  },[])
 
   return (
     <>
