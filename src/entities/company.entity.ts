@@ -4,8 +4,15 @@ import { Entity,Column, PrimaryGeneratedColumn, PrimaryColumn } from "typeorm";
 export class Company {
 
     //company identification number
-    @PrimaryColumn()
-    public cin:number
+
+    @PrimaryGeneratedColumn()
+    id:number
+
+    @Column({
+        type: "varchar",
+        nullable:true
+    })
+    public cin:string
 
     @Column()
     public name:string
