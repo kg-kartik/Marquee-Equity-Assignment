@@ -5,13 +5,7 @@ export class Company {
 
     //company identification number
 
-    @PrimaryGeneratedColumn()
-    id:number
-
-    @Column({
-        type: "varchar",
-        nullable:true
-    })
+    @PrimaryColumn()
     public cin:string
 
     @Column()

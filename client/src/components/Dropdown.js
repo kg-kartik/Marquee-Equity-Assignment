@@ -3,10 +3,13 @@ import AsyncSelect from "react-select/async";
 import { useEffect, useState } from "react";
 import Axios from "axios"
 import { parse } from 'node-html-parser';
+// import {useHistory} from "react-router-dom"
 
 const Dropdown = ({ options, placeholder, cb,cbInput }) => {
     const [selectedOption, setSelectedOption] = useState(null);
     const [inputValue,setInputValue] = useState("");
+
+    // const navigate = useHistory();
 
     const handleValueChange = (val) => {
         setSelectedOption(val);
@@ -95,6 +98,7 @@ const Dropdown = ({ options, placeholder, cb,cbInput }) => {
         })
         .then((res) => {
             console.log(res.data,"data saved successfully");  
+            window.location.replace("http://localhost:3000/about");
         }).catch((err) => {
             console.log(err);
         });
