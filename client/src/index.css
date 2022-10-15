@@ -68,7 +68,7 @@ td {
 }
 
 .search-wrapper {
-  margin: 2% 25%;
+  margin: 3% 25%;
 }
 
 .text {
@@ -85,14 +85,21 @@ td {
   outline: none;
   background: transparent;
   cursor: pointer;
+  font-size: 1.1rem;
+  padding: 1rem 2rem;
   font-weight: 600;
   color: #567df4;
   box-shadow: 0 0 0 1rem transparent;
-  font-size: 1rem;
-  padding: 1rem 2.5rem;
 }
 
 .button:hover {
   color: white;
   background-color: #6589f7;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 15%;
+  margin-top: 30%;
 }

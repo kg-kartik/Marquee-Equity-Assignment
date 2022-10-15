@@ -55,31 +55,49 @@ const Dropdown = ({ options, placeholder, cb,cbInput }) => {
     formData.append("search",inputValue);
     formData.append("filter","company");
 
-    const loadOptions = (inputValue) => {
-        return Axios({
-            data:formData,
-            method:"POST",
-            url:API_URL
+    const loadOptions = () => {
+
+        //!todo add debouncing; this is for test only
+        if(inputValue.length > 4){
+
+            return Axios({
+                data:formData,
+                method:"POST",
+                url:API_URL
+            })
+            .then((data) => {
+                
+                const root = parse(data.data);
+    
+                var resultArray = [];
+    
+                root.querySelectorAll('div').forEach(function(elem) {
+                    const obj = {};
+                    obj.cin = elem.id;
+                    obj.name = elem.innerText;
+                    resultArray.push(obj);
+                });
+    
+                return resultArray;
+    
+            }).catch((err) => {
+                console.log(err);
+            })
+        }
+    }
+
+    const addCompany = () => {
+        Axios.post("http://localhost:5000/company/addCompany",{
+            companyDetails:{
+                name:selectedOption.name,
+                cin:selectedOption.cin.slice(9+selectedOption.name.length,selectedOption.cin.length)
+            }
         })
-        .then((data) => {
-            
-            const root = parse(data.data);
-
-            var resultArray = [];
-
-            console.log(root.querySelectorAll("div").attr("id"))
-
-            root.querySelectorAll('div').forEach(function(elem) {
-                const obj = {};
-                obj.name = elem.innerText;
-                resultArray.push(obj);
-            });
-
-            return resultArray;
-
+        .then((res) => {
+            console.log(res.data,"data saved successfully");  
         }).catch((err) => {
             console.log(err);
-        })
+        });
     }
 
     return (
@@ -93,12 +111,11 @@ const Dropdown = ({ options, placeholder, cb,cbInput }) => {
                     ...theme,
                     colors: {
                         neutral0: "#24272bff",
-                        // primary:"#415a77",
                         primary25: "#4a525aff;"
                     }
                 })}
                 getOptionLabel={e => e.name}
-                getOptionValue={e => e.name}  
+                getOptionValue={e => e.cin}  
                 loadOptions={loadOptions}
                 defaultValue={selectedOption}
                 onChange={(val) => handleValueChange(val)}
@@ -106,13 +123,15 @@ const Dropdown = ({ options, placeholder, cb,cbInput }) => {
                 options={options}
             />
             
-            <button
-                className="button"
-                onClick={() => console.log("lol")}
-            >   
-                <div className="text">Add company</div>
+            <div className="button-container">
+                <button
+                    className="button"
+                    onClick={addCompany}
+                >   
+                    <div className="text">Add company</div>
 
-            </button>
+                </button>
+            </div>
         </>
     );
 };

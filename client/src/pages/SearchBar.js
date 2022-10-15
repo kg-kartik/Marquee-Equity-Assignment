@@ -1,14 +1,12 @@
 import React from "react";
 import Dropdown from "../components/Dropdown";
-import {useEffect,useState} from "react"
-import Axios from "axios"
-import { parse } from 'node-html-parser';
 
 const SearchBar = () => {
 
     const [dropdownValue, setDropdownValue] = useState("");
     const [input,setInput] = useState("");
 
+    //incase value is needed in this component
     const handleDropdownValue = (inputValue) => {
         setDropdownValue(inputValue.value);
     }
