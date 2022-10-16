@@ -3,7 +3,6 @@ import AsyncSelect from "react-select/async";
 import { useEffect, useState } from "react";
 import Axios from "axios"
 import { parse } from 'node-html-parser';
-// import {useHistory} from "react-router-dom"
 
 const Dropdown = ({ options, placeholder, cb,cbInput }) => {
     const [selectedOption, setSelectedOption] = useState(null);
@@ -58,35 +57,47 @@ const Dropdown = ({ options, placeholder, cb,cbInput }) => {
     formData.append("search",inputValue);
     formData.append("filter","company");
 
+    const debounce = (fn,delay) => {
+        let timeoutID;
+        return function(...args) {
+            if(timeoutID){
+                clearTimeout(timeoutID);
+            }
+
+            timeoutID = setTimeout(() => {
+                fn(...args);
+            },delay);
+
+        }
+    }
+    
     const loadOptions = () => {
 
-        //!todo add debouncing; this is for test only
-        if(inputValue.length > 4){
+        //!todo add debouncing
+            
+        return Axios({
+            data:formData,
+            method:"POST",
+            url:API_URL
+        })
+        .then((data) => {
+            
+            const root = parse(data.data);
 
-            return Axios({
-                data:formData,
-                method:"POST",
-                url:API_URL
-            })
-            .then((data) => {
-                
-                const root = parse(data.data);
-    
-                var resultArray = [];
-    
-                root.querySelectorAll('div').forEach(function(elem) {
-                    const obj = {};
-                    obj.cin = elem.id;
-                    obj.name = elem.innerText;
-                    resultArray.push(obj);
-                });
-    
-                return resultArray;
-    
-            }).catch((err) => {
-                console.log(err);
-            })
-        }
+            var resultArray = [];
+
+            root.querySelectorAll('div').forEach(function(elem) {
+                const obj = {};
+                obj.cin = elem.id;
+                obj.name = elem.innerText;
+                resultArray.push(obj);
+            });
+
+            return resultArray;
+
+        }).catch((err) => {
+            console.log(err);
+        })
     }
 
     const addCompany = () => {
